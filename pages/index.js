@@ -123,7 +123,7 @@ export default function Home() {
         />
       )}
 
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className={currentGame ? "bg-gradient-to-tr from-cyan-500 via-blue-500 to-indigo-500 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" : "w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"}>
         {currentGame && (
           <div
           className="m-5 p-5 bg-purple-300 rounded-lg font-bold"
