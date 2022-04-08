@@ -54,13 +54,19 @@ export default function Home() {
     });
   }, []);
 
+  useEffect(() => {
+    if (games.length > 0) {
+      handleGame({"target": {"value": "lVULOCkDHiCZpiQvo4iz" }});
+    }
+  }, [games])
+
   const [currentGame, setCurrentGame] = useState("");
   const [currentGameId, setCurrentGameId] = useState("");
   const [scored, setScored] = useState(0);
   const [missed, setMissed] = useState(0);
   const [total, setTotal] = useState(0);
 
-  const handleGame = (e) => {
+  function handleGame (e) {
     const id = e.target.value;
     let data = games.map((game) => {
       if (game.id === id) {
@@ -104,7 +110,10 @@ export default function Home() {
 
   return (
     <>
-      <div className="absolute top-0 right-0 m-5 bg-blue-500 p-2 z-10 rounded-lg">
+      {!currentGame && (
+        <div>Loading...</div>
+      )}
+      <div className="absolute top-0 right-0 sm:m-2 lg:m-5 bg-blue-500 sm:p-[0.0125rem] lg:p-2 z-10 rounded-lg">
         <label htmlFor="game">Choose a match: </label>
         <select value={currentGameId} onChange={handleGame}>
           {games &&
@@ -116,11 +125,19 @@ export default function Home() {
         </select>
       </div>
       {currentGame && (
-        <ImageMarker
-          src="field.png"
-          markers={currentGame.cMarkers}
-          onAddMarker={() => {}}
-        />
+        <div>
+          { (currentGame.flipped) 
+          ? (<ImageMarker
+            src="fieldFlipped.png"
+            markers={currentGame.cMarkers}
+            onAddMarker={() => {}}
+          />) : (<ImageMarker
+            src="field.png"
+            markers={currentGame.cMarkers}
+            onAddMarker={() => {}}
+          />)
+        }
+        </div>
       )}
 
       <div className={currentGame ? "bg-gradient-to-tr from-cyan-500 via-blue-500 to-indigo-500 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" : "w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"}>
