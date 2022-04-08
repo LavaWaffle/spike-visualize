@@ -65,6 +65,7 @@ export default function Home() {
   const [scored, setScored] = useState(0);
   const [missed, setMissed] = useState(0);
   const [total, setTotal] = useState(0);
+  const [bounced, setBounced] = useState(0);
 
   function handleGame (e) {
     const id = e.target.value;
@@ -82,27 +83,44 @@ export default function Home() {
       setCurrentGame(data);
       let sco = 0;
       let mis = 0;
+      let bounce = 0;
       data.cMarkers.map((marker, index) => {
         if (index == 0) {
           sco = 0;
           mis = 0;
+          bounce = 0;
         }
+
+        console.log(index+1)
+        console.log("marker1", marker.type1)
+        console.log("marker2", marker.type2)
+
         if (marker.type1 == "got in") {
           sco = sco + 1;
+        } else if (marker.type1 == "bounce out" ) {
+          bounce = bounce + 1;
         } else {
           mis = mis + 1;
         }
         if (marker.type2 == "got in") {
           sco = sco + 1;
-        } else {
+        } else if (marker.type2 == "bounce out" ) {
+          bounce = bounce + 1;
+        } else if (marker.type2 == "miss close" || marker.type2 == "miss far") {
           mis = mis + 1;
         }
+
+        console.log("Bounce: ", bounce)
+        console.log("Mis: ", mis)
+        console.log("sco: ", sco)
+
       });
       sco = sco + data.autoBalls;
       mis = mis + (2 - data.autoBalls);
-      setTotal(sco + mis);
+      setTotal(sco + mis + bounce);
       setScored(sco);
       setMissed(mis);
+      setBounced(bounce);
     } catch (e) {
       console.log(e);
     }
@@ -213,16 +231,21 @@ export default function Home() {
                   Scored: <span className="text-emerald-500">{scored}</span>
                 </h1>
                 <h1>
+                  Bounced: <span className="text-cyan-500">{bounced}</span>
+                </h1>
+                <h1>
                   Missed: <span className="text-red-500">{missed}</span>
                 </h1>
                 <h1>
                   Total: <span className="text-purple-500">{total}</span>
                 </h1>
+                <span>*Note auto misses/bounces are counted as misses, not bounces</span>
               </div>
               <PieChart
                 className="w-1/2 mt-1" 
                 data={[
                   { title: 'Missed', value: missed, color: '#EF4444'},
+                  { title: 'Bounced', value: bounced, color: '#06B6D4'},
                   { title: 'Scored', value: scored, color: '#10B981'},
                 ]}
               />
